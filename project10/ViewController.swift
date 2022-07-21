@@ -13,6 +13,14 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let defaults = UserDefaults.standard
+
+        if let savedPeople = defaults.object(forKey: "people") as? Data {
+            if let decodedPeople = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedPeople) as? [Person] {
+                peoples = decodedPeople
+            }
+        }
+        
         if #available(iOS 15.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithTransparentBackground()
@@ -88,6 +96,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 [weak self, weak ac] _ in
                 guard let newName = ac?.textFields?[0].text else {return}
                 person.name = newName
+                self?.save()
                 self?.collectionView.reloadData()
             })
             
@@ -97,6 +106,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             [weak self] action in
             self?.peoples.remove(at: indexPath.item)
             self?.collectionView.deleteItems(at: [indexPath])
+            self?.save()
             self?.collectionView.reloadData()
         })
         acChoice.addAction(UIAlertAction(title: "Cancel", style: .default))
@@ -114,6 +124,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         }
         let person = Person(name: "Unknown", image: imageName)
         peoples.append(person)
+        self.save()
         collectionView.reloadData()
         
         dismiss(animated: true)
@@ -123,6 +134,13 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = paths[0]
         return documentsDirectory
+    }
+    
+    func save() {
+        if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: peoples, requiringSecureCoding: false) {
+            let defaults = UserDefaults.standard
+            defaults.set(savedData, forKey: "people")
+        }
     }
 }
 

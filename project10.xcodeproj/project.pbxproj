@@ -298,6 +298,7 @@
 				DEVELOPMENT_TEAM = 5LP3MC28Z5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = project10/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need this for our data";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to import photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -327,6 +328,7 @@
 				DEVELOPMENT_TEAM = 5LP3MC28Z5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = project10/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need this for our data";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to import photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

@@ -17,9 +17,30 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
 
     @objc func addNewPerson() {
         let picker = UIImagePickerController()
-        picker.allowsEditing = true
-        picker.delegate = self
-        present(picker, animated: true)
+        let ac = UIAlertController(title: "Use camera or gallery", message: nil, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "Camera", style: .default) {
+            [weak self] action in
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                picker.sourceType = .camera
+            } else {
+                let acError = UIAlertController(title: "Your phone don't have camera, use gallery instead", message: nil, preferredStyle: .alert)
+                acError.addAction(UIAlertAction(title: "Use gallery", style: .cancel))
+                self?.present(acError, animated: true)
+            }
+            picker.allowsEditing = true
+            picker.delegate = self
+            self?.present(picker, animated: true)
+        })
+        ac.addAction(UIAlertAction(title: "Gallery", style: .default) {
+            [weak self] action in
+                picker.allowsEditing = true
+                picker.delegate = self
+                self?.present(picker, animated: true)
+        })
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(ac, animated: true)
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

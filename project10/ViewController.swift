@@ -12,6 +12,17 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = UIColor.lightGray
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance =
+            navigationController?.navigationBar.standardAppearance
+        }else{
+            navigationController?.navigationBar.backgroundColor = UIColor.lightGray
+        }
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
     }
 

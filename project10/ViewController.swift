@@ -45,17 +45,31 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let person = peoples[indexPath.item]
-        let ac = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
-        ac.addTextField()
-        ac.addAction(UIAlertAction(title: "cancel", style: .cancel))
-        ac.addAction(UIAlertAction(title: "ok", style: .default) {
-            [weak self, weak ac] _ in
-            guard let newName = ac?.textFields?[0].text else {return}
-            person.name = newName
+        
+        let acChoice = UIAlertController(title: "Rename or delete person", message: nil, preferredStyle: .actionSheet)
+        acChoice.addAction(UIAlertAction(title: "Rename", style: .default) {
+            [weak self] action in
+            let ac = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
+            ac.addTextField()
+            ac.addAction(UIAlertAction(title: "cancel", style: .cancel))
+            ac.addAction(UIAlertAction(title: "ok", style: .default) {
+                [weak self, weak ac] _ in
+                guard let newName = ac?.textFields?[0].text else {return}
+                person.name = newName
+                self?.collectionView.reloadData()
+            })
+            
+            self?.present(ac, animated: true)
+        })
+        acChoice.addAction(UIAlertAction(title: "Delete", style: .default) {
+            [weak self] action in
+            self?.peoples.remove(at: indexPath.item)
+            self?.collectionView.deleteItems(at: [indexPath])
             self?.collectionView.reloadData()
         })
+        acChoice.addAction(UIAlertAction(title: "Cancel", style: .default))
+        present(acChoice, animated: true)
         
-        present(ac, animated: true)
     }
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else {return }

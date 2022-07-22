@@ -15,4 +15,5 @@ class Person: NSObject, Codable {
         self.name = name
         self.image = image
     }
+    
 }

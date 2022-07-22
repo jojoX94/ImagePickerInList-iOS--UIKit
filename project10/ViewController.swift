@@ -16,6 +16,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         let defaults = UserDefaults.standard
 
         if let savedPeople = defaults.object(forKey: "people") as? Data {
+
             let jsonDecoder = JSONDecoder()
 
             do {
@@ -25,6 +26,19 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             }
         }
         
+
+
+        
+        if #available(iOS 15.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = UIColor.lightGray
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance =
+            navigationController?.navigationBar.standardAppearance
+        }else{
+            navigationController?.navigationBar.backgroundColor = UIColor.lightGray
+        }
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
     }
 

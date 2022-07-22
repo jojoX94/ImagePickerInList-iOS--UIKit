@@ -12,6 +12,19 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let defaults = UserDefaults.standard
+
+        if let savedPeople = defaults.object(forKey: "people") as? Data {
+            let jsonDecoder = JSONDecoder()
+
+            do {
+                peoples = try jsonDecoder.decode([Person].self, from: savedPeople)
+            } catch {
+                print("Failed to load people")
+            }
+        }
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
     }
 
@@ -77,6 +90,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 [weak self, weak ac] _ in
                 guard let newName = ac?.textFields?[0].text else {return}
                 person.name = newName
+                self?.save()
                 self?.collectionView.reloadData()
             })
             
@@ -86,6 +100,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             [weak self] action in
             self?.peoples.remove(at: indexPath.item)
             self?.collectionView.deleteItems(at: [indexPath])
+            self?.save()
             self?.collectionView.reloadData()
         })
         acChoice.addAction(UIAlertAction(title: "Cancel", style: .default))
@@ -103,6 +118,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         }
         let person = Person(name: "Unknown", image: imageName)
         peoples.append(person)
+        self.save()
         collectionView.reloadData()
         
         dismiss(animated: true)
@@ -112,6 +128,16 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let documentsDirectory = paths[0]
         return documentsDirectory
+    }
+    
+    func save() {
+        let jsonEncoder = JSONEncoder()
+        if let saveData = try? jsonEncoder.encode(peoples) {
+            let defaults = UserDefaults.standard
+            defaults.set(saveData, forKey: "people")
+        } else {
+            print("Failed to save people")
+        }
     }
 }
 
